@@ -45,6 +45,11 @@
                   
                   <div class="mt-3">
                     <button type="submit" class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn">SIGN IN</button>
+                    <div class="mb-2 mt-3">
+                      <a href="{{ route('google.login') }}" class="btn btn-block btn-dark btn-lg font-weight-medium auth-form-btn btn-rounded">
+                        <i class="mdi mdi-google me-2"></i> Connect with Google
+                      </a>
+                    </div>
                   </div>
                   
                   <div class="my-2 d-flex justify-content-between align-items-center">

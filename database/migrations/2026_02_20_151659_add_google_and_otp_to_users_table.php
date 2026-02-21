@@ -1,0 +1,25 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            // Tambah kolom id_google (varchar 256) sesuai modul
+            $table->string('id_google', 256)->nullable()->after('id');
+            // Tambah kolom otp (varchar 6) sesuai modul
+            $table->string('otp', 6)->nullable()->after('password');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn(['id_google', 'otp']);
+        });
+    }
+};

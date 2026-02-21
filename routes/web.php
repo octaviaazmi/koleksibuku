@@ -20,6 +20,13 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\BukuController;
+use App\Http\Controllers\Auth\GoogleController;
+
+// Rute untuk mengarahkan ke halaman login Google
+Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
+
+// Rute callback setelah login dari Google berhasil
+Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/kategori', [KategoriController::class, 'index']);
