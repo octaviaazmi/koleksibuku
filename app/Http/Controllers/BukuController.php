@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Buku;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class BukuController extends Controller
 {
@@ -40,5 +41,17 @@ class BukuController extends Controller
         $buku = Buku::findOrFail($id);
         $buku->update($request->all());
         return redirect('/buku')->with('success', 'Data buku berhasil diperbarui!');
+    }
+
+    public function cetak_pdf()
+    {
+        // Mengambil semua data dari tabel buku
+        $buku = buku::all();
+
+        // Memanggil view bernama pdf.blade.php yang ada di folder resources/views/buku/
+        $pdf = Pdf::loadview('buku.pdf', ['buku' => $buku]);
+
+        // Mendownload file PDF-nya
+        return $pdf->download('laporan-buku-perpustakaan.pdf');
     }
 }

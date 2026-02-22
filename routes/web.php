@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\GeneratorController;
 
 // 1. Kalau buka web pertama kali (localhost:8000), langsung diarahkan ke halaman Login
 Route::get('/', function () {
@@ -28,6 +29,14 @@ Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('
 // Rute callback setelah login dari Google berhasil
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
+    // Route untuk menampilkan halaman input OTP
+Route::get('/otp-verification', function () {
+    return view('auth.otp');
+})->name('otp.view');
+
+// Route untuk memproses pengecekan OTP
+Route::post('/verify-otp', [App\Http\Controllers\Auth\GoogleController::class, 'verifyOtp'])->name('otp.verify');
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/kategori', [KategoriController::class, 'index']);
     Route::get('/kategori/create', [KategoriController::class, 'create']);
@@ -42,5 +51,12 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/buku/{id}', [BukuController::class, 'destroy']);
     Route::get('/buku/{id}/edit', [BukuController::class, 'edit']);
     Route::put('/buku/{id}', [BukuController::class, 'update']);
+
+// Ganti route buku kamu yang lama dengan baris sakti ini:
+Route::resource('buku', BukuController::class);
+
+Route::get('/generator', [GeneratorController::class, 'index'])->name('generator.index');
+Route::get('/generator/undangan', [GeneratorController::class, 'cetakUndangan'])->name('undangan.cetak');
+Route::get('/generator/sertifikat', [GeneratorController::class, 'cetakSertifikat'])->name('sertifikat.cetak');
 
 });

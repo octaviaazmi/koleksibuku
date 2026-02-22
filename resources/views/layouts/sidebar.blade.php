@@ -34,5 +34,12 @@
         <i class="mdi mdi-book-open-page-variant menu-icon"></i>
       </a>
     </li>
+
+    <li class="nav-item">
+      <a class="nav-link" href="{{ route('generator.index') }}">
+        <span class="menu-title">Generator Dokumen</span>
+        <i class="mdi mdi-file-document-outline menu-icon"></i>
+      </a>
+    </li>
   </ul>
 </nav>

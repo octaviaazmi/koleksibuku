@@ -7,9 +7,12 @@
       <i class="mdi mdi-book-open-page-variant"></i>
     </span> Data Buku
   </h3>
-  <a href="{{ url('/buku/create') }}" class="btn btn-gradient-primary btn-rounded btn-fw">
-    <i class="mdi mdi-plus"></i> Tambah Buku
-  </a>
+  
+  <nav aria-label="breadcrumb">
+    <a href="{{ route('buku.create') }}" class="btn btn-gradient-primary btn-rounded btn-fw">
+      <i class="mdi mdi-plus"></i> Tambah Buku
+    </a>
+  </nav>
 </div>
 
 <div class="row">
