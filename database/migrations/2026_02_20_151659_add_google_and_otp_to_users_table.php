@@ -9,9 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Tambah kolom id_google (varchar 256) sesuai modul
             $table->string('id_google', 256)->nullable()->after('id');
-            // Tambah kolom otp (varchar 6) sesuai modul
             $table->string('otp', 6)->nullable()->after('password');
         });
     }

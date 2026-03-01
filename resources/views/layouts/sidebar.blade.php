@@ -41,5 +41,13 @@
         <i class="mdi mdi-file-document-outline menu-icon"></i>
       </a>
     </li>
+
+    <li class="nav-item">
+      <a class="nav-link" href="{{ route('barang.index') }}">
+        <span class="menu-title">Data Barang (Tag)</span>
+        <i class="mdi mdi-tag-multiple menu-icon"></i>
+      </a>
+    </li>
+
   </ul>
 </nav>

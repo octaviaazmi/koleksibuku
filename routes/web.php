@@ -5,15 +5,14 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\GeneratorController;
 
-// 1. Kalau buka web pertama kali (localhost:8000), langsung diarahkan ke halaman Login
 Route::get('/', function () {
     return redirect('/login');
 });
 
-// 2. Ini rute otomatis bawaan Laravel Auth (untuk login, register, logout)
+
 Auth::routes();
 
-// 3. Ini rute untuk Dashboard, menggunakan HomeController yang tadi kita buat
+// rute untuk dashboard
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Auth::routes();
 
@@ -22,19 +21,20 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\BarangController;
 
-// Rute untuk mengarahkan ke halaman login Google
+// rute untuk mengarahkan ke halaman login Google
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
 
-// Rute callback setelah login dari Google berhasil
+// rute callback setelah login dari Google berhasil
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
-    // Route untuk menampilkan halaman input OTP
+// route untuk menampilkan halaman input OTP
 Route::get('/otp-verification', function () {
     return view('auth.otp');
 })->name('otp.view');
 
-// Route untuk memproses pengecekan OTP
+// route untuk memproses pengecekan OTP
 Route::post('/verify-otp', [App\Http\Controllers\Auth\GoogleController::class, 'verifyOtp'])->name('otp.verify');
 
 Route::middleware(['auth'])->group(function () {
@@ -52,7 +52,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/buku/{id}/edit', [BukuController::class, 'edit']);
     Route::put('/buku/{id}', [BukuController::class, 'update']);
 
-// Ganti route buku kamu yang lama dengan baris sakti ini:
+// Pastikan ini ada di DALAM Route::middleware(['auth'])->group(function () { ... });
+Route::resource('barang', BarangController::class);
+Route::post('/barang/cetak-tag', [BarangController::class, 'cetakTag'])->name('barang.cetak_tag');
+
 Route::resource('buku', BukuController::class);
 
 Route::get('/generator', [GeneratorController::class, 'index'])->name('generator.index');

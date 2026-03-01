@@ -10,15 +10,15 @@ class OtpMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $otp; // Variabel untuk menyimpan kode OTP
+    public $otp; // variabel untuk menyimpan kode OTP
 
-    // Fungsi ini untuk menerima kode OTP saat dikirim nanti
+    // menerima kode OTP saat dikirim
     public function __construct($otp)
     {
         $this->otp = $otp;
     }
 
-    // Fungsi ini untuk mengatur tampilan emailnya
+    // mengatur tampilan emailnya
     public function build()
     {
         return $this->subject('Kode Verifikasi OTP Koleksi Buku')

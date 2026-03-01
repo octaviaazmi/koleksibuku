@@ -8,22 +8,22 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Exception;
 use Illuminate\Support\Facades\Hash;
-use App\Mail\OtpMail; // Panggil Mailable yang kita buat tadi
-use Illuminate\Support\Facades\Mail; // Panggil fungsi email
-use Illuminate\Support\Str; // Panggil fungsi teks acak
+use App\Mail\OtpMail; 
+use Illuminate\Support\Facades\Mail; 
+use Illuminate\Support\Str; 
 
 class GoogleController extends Controller
 {
-    public function redirectToGoogle()
+    public function redirectToGoogle() //melempar user dari web menuju server google
     {
         return Socialite::driver('google')->redirect();
     }
 
-    public function handleGoogleCallback()
+    public function handleGoogleCallback() //mengembalikan data user
     {
         try {
-            $user = Socialite::driver('google')->user();
-            $finduser = User::where('email', $user->email)->first();
+            $user = Socialite::driver('google')->user(); 
+            $finduser = User::where('email', $user->email)->first();//cek db, kalo blm ada maka pake create
 
             if(!$finduser){
                 $finduser = User::create([
@@ -34,16 +34,16 @@ class GoogleController extends Controller
                 ]);
             }
 
-            // 1. Generate 6 digit OTP acak
+            // generate 6 digit OTP acak
             $otp = Str::upper(Str::random(6)); 
             
-            // 2. Simpan OTP ke database user tersebut
+            // simpan OTP ke db user tersebut
             $finduser->update(['otp' => $otp]);
 
-            // 3. Kirim email OTP ke Mailtrap
+            // kirim email OTP ke Mailtrap
             Mail::to($finduser->email)->send(new OtpMail($otp));
 
-            // 4. Simpan ID user di session sementara agar sistem tahu siapa yang sedang diverifikasi
+            // simpan ID user di session sementara agar sistem tahu siapa yang sedang diverifikasi
             session(['otp_user_id' => $finduser->id]);
 
             // 5. Lempar ke halaman input OTP
@@ -54,19 +54,19 @@ class GoogleController extends Controller
         }
     }
 
-    // Fungsi untuk mengecek apakah kode yang Pia masukkan benar
+    // cek kode yg dimasukin udh bener/engga
     public function verifyOtp(\Illuminate\Http\Request $request)
     {
         $user = User::find(session('otp_user_id'));
 
         if ($user && $user->otp == $request->otp) {
-            // Kalau benar, login-kan user dan hapus OTP-nya (biar tidak bisa dipakai lagi)
+            // klo bener, user login dan otpnya otomatis kehapus (sekali pake)
             Auth::login($user);
             $user->update(['otp' => null]);
             return redirect()->intended('home');
         }
 
-        // Kalau salah, balik lagi ke halaman OTP dengan pesan error
+        // kalo salah, balik lagi ke halaman otp dengan pesan error
         return redirect()->back()->with('error', 'Kode OTP salah atau sudah kadaluwarsa.');
     }
 }
