@@ -35,7 +35,7 @@ class BarangController extends Controller
         ];
 
         // 5. Cetak ke PDF
-        $pdf = Pdf::loadView('barang.pdf', $data)->setPaper('a4', 'portrait');
+        $pdf = Pdf::loadView('barang.pdf', $data);$pdf = Pdf::loadView('barang.pdf', $data)->setPaper('a4', 'portrait');
         
         // Pakai stream agar PDF-nya terbuka langsung di browser, tidak otomatis terdownload
         return $pdf->stream('Tag_Harga_TnJ108.pdf');

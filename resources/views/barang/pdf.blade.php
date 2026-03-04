@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Cetak Tag Harga</title>
+    <title>Cetak Tag Harga Presisi TnJ 108</title>
     <style>
-        /* Mengatur margin kertas agar pas dengan stiker */
+        /* 1. Mengatur Ukuran Fisik Kertas Custom (21,1 cm x 16,5 cm) */
         @page {
-            margin: 15px; 
+            size: 211mm 165mm;
+            margin: 4mm 0mm 0mm 4mm; /* Margin Atas 4mm, Kiri 4mm sesuai standar TnJ */
         }
         body {
             font-family: 'Helvetica', Arial, sans-serif;
@@ -13,44 +14,55 @@
             padding: 0;
         }
         
-        /* Kunci utamanya ada di Tabel ini */
+        /* 2. Mengatur Tabel sebagai Jaring Penahan */
         table {
-            width: 100%;
             border-collapse: collapse;
-            table-layout: fixed; /* Memaksa ukuran kolom sama rata */
+            table-layout: fixed;
+            width: 205mm; /* 5 Kolom x 41mm (Lebar Stiker 38mm + Jarak 3mm) */
         }
         td {
-            width: 20%; /* 100% dibagi 5 kolom = 20% */
-            height: 125px; /* Tinggi disesuaikan agar muat 8 baris */
-            vertical-align: middle;
-            text-align: center;
-            padding: 4px;
+            width: 41mm; /* Jarak dari ujung kiri stiker 1 ke ujung kiri stiker 2 */
+            height: 20mm; /* Jarak dari ujung atas stiker 1 ke ujung atas stiker 2 */
+            padding: 0;
+            vertical-align: top;
         }
         
-        /* Desain dalam kotak tag */
+        /* 3. Mengatur Ukuran Stiker Asli (Area Cetak) */
         .isi-barang {
-            border: 1px dashed #666;
-            border-radius: 6px;
-            padding: 10px 2px;
-            background-color: #fafafa;
+            width: 38mm; /* Lebar Asli Stiker */
+            height: 18mm; /* Tinggi Asli Stiker */
+            box-sizing: border-box;
+            padding: 1mm; /* Jarak aman agar teks tidak memotong tepi stiker */
+            text-align: center;
+            overflow: hidden; /* Mencegah teks kepanjangan merusak layout */
+            
+            /* CATATAN: Border dimatikan agar garis putus-putusnya tidak ikut ter-print */
+            /* border: 1px dashed #ccc; */ 
         }
+
+        /* 4. Font dikecilkan drastis karena ukuran asli sangat kecil */
         .nama {
-            font-size: 11px;
+            font-size: 8px;
             font-weight: bold;
             display: block;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
+            line-height: 1;
+            white-space: nowrap; /* Memaksa teks jadi 1 baris */
+            overflow: hidden; /* Menyembunyikan sisa teks yang kepanjangan */
         }
         .kode {
-            font-size: 9px;
+            font-size: 7px;
             color: #555;
             display: block;
+            line-height: 1;
         }
         .harga {
-            font-size: 14px;
+            font-size: 10px;
             font-weight: bold;
-            color: #d9534f;
+            color: #000;
             display: block;
-            margin-top: 5px;
+            margin-top: 2px;
+            line-height: 1;
         }
     </style>
 </head>
@@ -63,27 +75,21 @@
                 <td></td>
                 @php 
                     $kolom++;
-                    // Kalau sudah 5 kotak, turun ke baris baru
-                    if ($kolom % 5 == 0) {
-                        echo '</tr><tr>';
-                    }
+                    if ($kolom % 5 == 0) echo '</tr><tr>';
                 @endphp
             @endfor
 
             @foreach($barang as $item)
                 <td>
                     <div class="isi-barang">
-                        <span class="nama">{{ $item->nama_barang }}</span>
+                        <span class="nama">{{ strlen($item->nama_barang) > 18 ? substr($item->nama_barang, 0, 18).'..' : $item->nama_barang }}</span>
                         <span class="kode">{{ $item->id_barang }}</span>
                         <span class="harga">Rp {{ number_format($item->harga, 0, ',', '.') }}</span>
                     </div>
                 </td>
                 @php 
                     $kolom++;
-                    // Kalau sudah 5 kotak, turun ke baris baru
-                    if ($kolom % 5 == 0) {
-                        echo '</tr><tr>'; 
-                    }
+                    if ($kolom % 5 == 0) echo '</tr><tr>'; 
                 @endphp
             @endforeach
 
