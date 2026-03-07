@@ -49,5 +49,20 @@
       </a>
     </li>
 
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="collapse" href="#js-menu" aria-expanded="false" aria-controls="js-menu">
+        <span class="menu-title">Tugas Javascript</span>
+        <i class="menu-arrow"></i>
+        <i class="mdi mdi-code-tags menu-icon"></i>
+      </a>
+      <div class="collapse" id="js-menu">
+        <ul class="nav flex-column sub-menu">
+          <li class="nav-item"> <a class="nav-link" href="{{ route('js.html') }}">Tabel HTML DOM</a></li>
+          <li class="nav-item"> <a class="nav-link" href="{{ route('js.datatables') }}">DataTables DOM</a></li>
+          <li class="nav-item"> <a class="nav-link" href="{{ route('js.select') }}">Select Kota</a></li>
+        </ul>
+      </div>
+    </li>
+
   </ul>
 </nav>

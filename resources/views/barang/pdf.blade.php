@@ -3,10 +3,10 @@
 <head>
     <title>Cetak Tag Harga Presisi TnJ 108</title>
     <style>
-        /* 1. Mengatur Ukuran Fisik Kertas Custom (21,1 cm x 16,5 cm) */
+        /* atur ukuran tnj */
         @page {
             size: 211mm 165mm;
-            margin: 4mm 0mm 0mm 4mm; /* Margin Atas 4mm, Kiri 4mm sesuai standar TnJ */
+            margin: 4mm 0mm 0mm 4mm; 
         }
         body {
             font-family: 'Helvetica', Arial, sans-serif;
@@ -14,41 +14,38 @@
             padding: 0;
         }
         
-        /* 2. Mengatur Tabel sebagai Jaring Penahan */
+        /* atur tabelnya */
         table {
             border-collapse: collapse;
             table-layout: fixed;
-            width: 205mm; /* 5 Kolom x 41mm (Lebar Stiker 38mm + Jarak 3mm) */
+            width: 205mm;
         }
         td {
-            width: 41mm; /* Jarak dari ujung kiri stiker 1 ke ujung kiri stiker 2 */
-            height: 20mm; /* Jarak dari ujung atas stiker 1 ke ujung atas stiker 2 */
+            width: 41mm; 
+            height: 20mm; 
             padding: 0;
-            vertical-align: top;
+            vertical-align: center;
         }
         
-        /* 3. Mengatur Ukuran Stiker Asli (Area Cetak) */
+        /* mengatur ukuran stiker */
         .isi-barang {
-            width: 38mm; /* Lebar Asli Stiker */
-            height: 18mm; /* Tinggi Asli Stiker */
+            width: 38mm;
+            height: 18mm; 
             box-sizing: border-box;
-            padding: 1mm; /* Jarak aman agar teks tidak memotong tepi stiker */
+            padding: 1mm; 
             text-align: center;
-            overflow: hidden; /* Mencegah teks kepanjangan merusak layout */
+            overflow: hidden;
             
-            /* CATATAN: Border dimatikan agar garis putus-putusnya tidak ikut ter-print */
-            /* border: 1px dashed #ccc; */ 
         }
 
-        /* 4. Font dikecilkan drastis karena ukuran asli sangat kecil */
         .nama {
             font-size: 8px;
             font-weight: bold;
             display: block;
             margin-bottom: 1px;
             line-height: 1;
-            white-space: nowrap; /* Memaksa teks jadi 1 baris */
-            overflow: hidden; /* Menyembunyikan sisa teks yang kepanjangan */
+            white-space: nowrap; 
+            overflow: hidden; 
         }
         .kode {
             font-size: 7px;

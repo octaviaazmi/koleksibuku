@@ -9,15 +9,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // 1. Buat Tabel Barang
+        // tabel barang
         Schema::create('barang', function (Blueprint $table) {
-            $table->string('id_barang', 10)->primary(); // Primary key custom
+            $table->string('id_barang', 10)->primary(); // pk
             $table->string('nama_barang');
             $table->integer('harga');
             $table->timestamps();
         });
 
-        // 2. Buat Trigger Penomoran Otomatis (BRG001, BRG002, dst)
+        // trigger untuk penomoran otomatis
         DB::unprepared("
             CREATE TRIGGER tr_generate_id_barang BEFORE INSERT ON barang
             FOR EACH ROW
@@ -40,7 +40,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        // Hapus trigger dulu baru hapus tabel kalau di-rollback
+        // kalo rollback hapus trigger dulu
         DB::unprepared("DROP TRIGGER IF EXISTS tr_generate_id_barang");
         Schema::dropIfExists('barang');
     }

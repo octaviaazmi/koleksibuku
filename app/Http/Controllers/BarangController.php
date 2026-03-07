@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Barang;
-use Barryvdh\DomPDF\Facade\Pdf; // Nanti kita aktifkan di langkah cetak PDF
+use Barryvdh\DomPDF\Facade\Pdf; 
 
 class BarangController extends Controller
 {
@@ -16,32 +16,29 @@ class BarangController extends Controller
 
     public function cetakTag(Request $request)
     {
-        // 1. Cek apakah ada barang yang dicentang
+        // cek ada barang yan dicentang/ngga
         if (!$request->has('id_barang')) {
             return redirect()->back()->with('error', 'Pilih minimal 1 barang untuk dicetak!');
         }
 
-        // 2. Ambil detail data barang dari database
+        // ambil detail barang dr db
         $barangDipilih = Barang::whereIn('id_barang', $request->id_barang)->get();
 
-        // 3. Algoritma mencari jumlah Kotak Kosong (Skip)
-        // Kertas TnJ 108 memiliki 5 kolom per baris
+        // kertas tnj 5 kolom per baris
         $skip = (($request->y - 1) * 5) + ($request->x - 1);
 
-        // 4. Bungkus data untuk dikirim ke PDF
+        // bungkus datanya untuk dikirim ke pdf
         $data = [
             'barang' => $barangDipilih,
             'skip' => $skip
         ];
 
-        // 5. Cetak ke PDF
-        $pdf = Pdf::loadView('barang.pdf', $data);$pdf = Pdf::loadView('barang.pdf', $data)->setPaper('a4', 'portrait');
+        // cetak ke pdf
+        $pdf = Pdf::loadView('barang.pdf', $data);
         
-        // Pakai stream agar PDF-nya terbuka langsung di browser, tidak otomatis terdownload
+        // supaya pdfnya lgsg kebuka, ga lgsg kedownload
         return $pdf->stream('Tag_Harga_TnJ108.pdf');
     }
-
-    // ... (kodingan index dan cetakTag biarkan saja di atas) ...
 
     public function create()
     {
@@ -55,7 +52,7 @@ class BarangController extends Controller
             'harga' => 'required|numeric'
         ]);
 
-        // id_barang tidak perlu diisi karena sudah otomatis dibuatkan oleh Trigger Database
+        // id_barang tidak perlu diisi karena udah otomatis dibuatin trigger
         Barang::create([
             'nama_barang' => $request->nama_barang,
             'harga' => $request->harga
@@ -66,7 +63,7 @@ class BarangController extends Controller
 
     public function edit($id)
     {
-        // Cari barang berdasarkan id_barang (karena primary key kita bentuknya string, pakai where)
+        // cari barang berdasarkan id barang
         $barang = Barang::where('id_barang', $id)->firstOrFail();
         return view('barang.edit', compact('barang'));
     }

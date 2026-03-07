@@ -22,6 +22,7 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\BarangController;
+use App\Http\Controllers\JsController;
 
 // rute untuk mengarahkan ke halaman login Google
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
@@ -55,6 +56,9 @@ Route::middleware(['auth'])->group(function () {
 // Pastikan ini ada di DALAM Route::middleware(['auth'])->group(function () { ... });
 Route::resource('barang', BarangController::class);
 Route::post('/barang/cetak-tag', [BarangController::class, 'cetakTag'])->name('barang.cetak_tag');
+Route::get('/js/html', [JsController::class, 'indexHtml'])->name('js.html');
+    Route::get('/js/datatables', [JsController::class, 'indexDatatables'])->name('js.datatables');
+    Route::get('/js/select', [JsController::class, 'indexSelect'])->name('js.select');
 
 Route::resource('buku', BukuController::class);
 

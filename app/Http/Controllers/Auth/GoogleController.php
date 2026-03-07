@@ -40,13 +40,13 @@ class GoogleController extends Controller
             // simpan OTP ke db user tersebut
             $finduser->update(['otp' => $otp]);
 
-            // kirim email OTP ke Mailtrap
+            // kirim email OTP ke mailtrap
             Mail::to($finduser->email)->send(new OtpMail($otp));
 
             // simpan ID user di session sementara agar sistem tahu siapa yang sedang diverifikasi
             session(['otp_user_id' => $finduser->id]);
 
-            // 5. Lempar ke halaman input OTP
+            // lempar ke halaman input OTP
             return redirect()->route('otp.view');
 
         } catch (Exception $e) {
