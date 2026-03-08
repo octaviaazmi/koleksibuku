@@ -1,8 +1,7 @@
 @extends('layouts.master')
 
-@section('content')
+@section('style_page')
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
-
 <style>
     /* Kursor jari saat hover di baris tabel */
     #tabelBarangDT tbody tr {
@@ -13,7 +12,9 @@
         background-color: #f1f1f1 !important;
     }
 </style>
+@endsection
 
+@section('content')
 <div class="page-header">
     <h3 class="page-title"> Tabel DataTables DOM (Tanpa Database) </h3>
 </div>
@@ -103,22 +104,22 @@
     </div>
   </div>
 </div>
+@endsection
 
-<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+@section('javascript_page')
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 
 <script>
 $(document).ready(function() {
-    console.log("✅ SISTEM AMAN: JQuery dan DataTables siap digunakan!");
+    console.log("✅ SISTEM AMAN: JQuery dari Template Bekerja!");
 
-    // 1. Inisialisasi DataTables
     let tabelDT = $('#tabelBarangDT').DataTable({
         "language": { "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/id.json" }
     });
     let rowTerpilihDT = null;
 
-    // 2. Fungsi Loading Pintar (Dilengkapi Jaring Penangkap Error)
+    // FUNGSI LOADING PINTAR
     function jalankanDenganLoadingDT(idTombol, teksAwal, idForm, fungsiEksekusi) {
         let form = document.getElementById(idForm);
         let tombol = document.getElementById(idTombol);
@@ -132,21 +133,17 @@ $(document).ready(function() {
         tombol.disabled = true;
 
         setTimeout(() => {
-            // MENGGUNAKAN TRY-CATCH UNTUK MENANGKAP ERROR DIAM-DIAM
             try {
-                fungsiEksekusi(); // Jalankan proses tambah/ubah/hapus
+                fungsiEksekusi();
             } catch (error) {
-                console.error("❌ ADA ERROR SAAT EKSEKUSI:", error);
-                alert("Waduh, ada yang error di kodingannya! Cek Console (F12) ya Pia.");
+                console.error("Error:", error);
             }
-
-            // Apapun yang terjadi (sukses atau error), tombol WAJIB dikembalikan seperti semula
             tombol.innerHTML = teksAwal;
             tombol.disabled = false;
         }, 1000);
     }
 
-    // --- 3. EVENT TAMBAH ---
+    // --- EVENT TAMBAH ---
     $('#btnTambahDT').on('click', function(e) {
         e.preventDefault();
         jalankanDenganLoadingDT('btnTambahDT', 'Tambahkan', 'formTambahDT', function() {
@@ -157,12 +154,11 @@ $(document).ready(function() {
             // API DataTables
             tabelDT.row.add([ id, nama, harga ]).draw(false);
             
-            // Kosongkan form
             $('#formTambahDT')[0].reset();
         });
     });
 
-    // --- 4. KLIK BARIS MUNCULKAN MODAL ---
+    // --- KLIK BARIS MUNCULKAN MODAL ---
     $('#tabelBarangDT tbody').on('click', 'tr', function () {
         if ($(this).find('.dataTables_empty').length > 0) return;
 
@@ -176,7 +172,7 @@ $(document).ready(function() {
         $('#modalEditDT').modal('show');
     });
 
-    // --- 5. EVENT UBAH ---
+    // --- EVENT UBAH ---
     $('#btnUbahDT').on('click', function(e) {
         e.preventDefault();
         jalankanDenganLoadingDT('btnUbahDT', 'Ubah', 'formEditDT', function() {
@@ -189,7 +185,7 @@ $(document).ready(function() {
         });
     });
 
-    // --- 6. EVENT HAPUS ---
+    // --- EVENT HAPUS ---
     $('#btnHapusDT').on('click', function(e) {
         e.preventDefault();
         let tombol = document.getElementById('btnHapusDT');
@@ -201,9 +197,7 @@ $(document).ready(function() {
             try {
                 rowTerpilihDT.remove().draw(false);
                 $('#modalEditDT').modal('hide');
-            } catch (error) {
-                console.error("❌ ERROR SAAT HAPUS:", error);
-            }
+            } catch (error) {}
             tombol.innerHTML = 'Hapus';
             tombol.disabled = false;
         }, 1000);

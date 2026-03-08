@@ -21,6 +21,6 @@ class JsController extends Controller
     // Halaman 3: Select & Select2 Kota
     public function indexSelect()
     {
-        return view('js.select');
+        return view('js.select_kota');
     }
 }
