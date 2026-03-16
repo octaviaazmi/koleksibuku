@@ -63,6 +63,18 @@
         </ul>
       </div>
     </li>
-
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="collapse" href="#kasir-menu" aria-expanded="false" aria-controls="kasir-menu">
+        <span class="menu-title">Aplikasi Kasir</span>
+        <i class="menu-arrow"></i>
+        <i class="mdi mdi-cart menu-icon"></i>
+      </a>
+      <div class="collapse" id="kasir-menu">
+        <ul class="nav flex-column sub-menu">
+          <li class="nav-item"> <a class="nav-link" href="{{ route('kasir.ajax') }}">Kasir AJAX</a></li>
+          <li class="nav-item"> <a class="nav-link" href="{{ route('kasir.axios') }}">Kasir AXIOS</a></li>
+        </ul>
+      </div>
+    </li>
   </ul>
 </nav>

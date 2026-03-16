@@ -105,14 +105,14 @@
     // Menyimpan baris tabel (TR) yang sedang diklik ke dalam variabel
     let barisTerpilih = null;
 
-    // --- FUNGSI 1: SULAP TOMBOL JADI LOADING ---
+    // --- FUNGSI 1: TOMBOL JADI LOADING ---
     function jalankanDenganLoading(idTombol, teksAwal, idForm, fungsiEksekusi) {
         let form = document.getElementById(idForm);
         let tombol = document.getElementById(idTombol);
 
-        // Validasi HTML5 reportValidity() (Syarat dari Dosen)
+        // Validasi HTML5 reportValidity() 
         if (!form.checkValidity()) {
-            form.reportValidity(); // Memunculkan pop-up bawaan browser jika ada yang kosong
+            form.reportValidity(); 
             return; 
         }
 
@@ -120,10 +120,10 @@
         tombol.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...';
         tombol.disabled = true;
 
-        // Tunda 1 detik (1000ms) untuk mensimulasikan proses loading
+        // Tunda 1 detik 
         setTimeout(() => {
-            fungsiEksekusi(); // Jalankan fungsi utamanya (Tambah/Ubah/Hapus)
-            
+            fungsiEksekusi(); 
+
             // Kembalikan tombol ke bentuk semula
             tombol.innerHTML = teksAwal;
             tombol.disabled = false;
@@ -156,9 +156,9 @@
     document.getElementById('badanTabel').addEventListener('click', function(e) {
         // Cari elemen <tr> terdekat dari titik yang diklik
         let tr = e.target.closest('tr');
-        if (!tr) return; // Kalau yang diklik bukan baris, abaikan
+        if (!tr) return; 
 
-        barisTerpilih = tr; // Simpan baris ini ke memori
+        barisTerpilih = tr; 
         let kolom = tr.querySelectorAll('td');
 
         // Lempar isi tabel ke dalam form di Modal

@@ -23,6 +23,7 @@ use App\Http\Controllers\BukuController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\JsController;
+use App\Http\Controllers\KasirController; 
 
 // rute untuk mengarahkan ke halaman login Google
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
@@ -65,5 +66,13 @@ Route::resource('buku', BukuController::class);
 Route::get('/generator', [GeneratorController::class, 'index'])->name('generator.index');
 Route::get('/generator/undangan', [GeneratorController::class, 'cetakUndangan'])->name('undangan.cetak');
 Route::get('/generator/sertifikat', [GeneratorController::class, 'cetakSertifikat'])->name('sertifikat.cetak');
+
+// --- RUTE APLIKASI KASIR MODUL 5 ---
+Route::get('/kasir/ajax', [KasirController::class, 'indexAjax'])->name('kasir.ajax');
+Route::get('/kasir/axios', [KasirController::class, 'indexAxios'])->name('kasir.axios');
+
+// --- RUTE API (Untuk ngambil & nyimpen data di background) ---
+Route::get('/api/barang/{id}', [KasirController::class, 'getBarang']);
+Route::post('/api/transaksi', [KasirController::class, 'simpanTransaksi']);
 
 });

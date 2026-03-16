@@ -119,7 +119,7 @@ $(document).ready(function() {
     });
     let rowTerpilihDT = null;
 
-    // FUNGSI LOADING PINTAR
+    // FUNGSI LOADING
     function jalankanDenganLoadingDT(idTombol, teksAwal, idForm, fungsiEksekusi) {
         let form = document.getElementById(idForm);
         let tombol = document.getElementById(idTombol);

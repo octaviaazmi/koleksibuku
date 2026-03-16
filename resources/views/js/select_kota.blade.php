@@ -91,7 +91,7 @@ $(document).ready(function() {
     
     // A. Saat tombol tambah diklik
     $('#btnTambahBiasa').on('click', function() {
-        let kotaBaru = $('#inputKotaBiasa').val().trim(); // Ambil teks dan buang spasi ujungnya
+        let kotaBaru = $('#inputKotaBiasa').val().trim(); 
         
         if (kotaBaru !== "") {
             // HTML DOM: Buat elemen <option> baru
@@ -103,7 +103,7 @@ $(document).ready(function() {
             // Kosongkan inputannya lagi
             $('#inputKotaBiasa').val('');
             
-            // (Opsional) Langsung buat kota itu terpilih
+            // Langsung buat kota itu terpilih
             $('#dropdownBiasa').val(kotaBaru).trigger('change');
         } else {
             alert("Nama kota tidak boleh kosong ya!");
@@ -123,7 +123,7 @@ $(document).ready(function() {
     
     // 0. Wajib inisialisasi plugin Select2-nya dulu
     $('#dropdownSelect2').select2({
-        theme: "bootstrap", // Biar estetik ngikutin warna template
+        theme: "bootstrap", 
         placeholder: "-- Pilih Kota --"
     });
 
