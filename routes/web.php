@@ -24,6 +24,7 @@ use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\JsController;
 use App\Http\Controllers\KasirController; 
+use App\Http\Controllers\KantinController; // Taruh di baris paling atas (use section)
 
 // rute untuk mengarahkan ke halaman login Google
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
@@ -74,5 +75,11 @@ Route::get('/kasir/axios', [KasirController::class, 'indexAxios'])->name('kasir.
 // --- RUTE API (Untuk ngambil & nyimpen data di background) ---
 Route::get('/api/barang/{id}', [KasirController::class, 'getBarang']);
 Route::post('/api/transaksi', [KasirController::class, 'simpanTransaksi']);
+
+
+// --- RUTE KANTIN ONLINE MODUL 6 ---
+Route::get('/kantin', [KantinController::class, 'index'])->name('kantin.index');
+Route::get('/api/menu/{idvendor}', [KantinController::class, 'getMenu']); // Buat narik menu pakai AJAX
+Route::post('/kantin/checkout', [KantinController::class, 'checkout'])->name('kantin.checkout');
 
 });
