@@ -83,5 +83,12 @@
         <i class="mdi mdi-food menu-icon"></i>
       </a>
     </li>
+
+    <li class="nav-item">
+      <a class="nav-link" href="{{ route('vendor.index') }}">
+        <span class="menu-title">Dashboard Vendor</span>
+        <i class="mdi mdi-store menu-icon"></i>
+      </a>
+    </li>
   </ul>
 </nav>

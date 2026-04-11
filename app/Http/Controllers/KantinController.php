@@ -9,45 +9,41 @@ use App\Models\DetailPesanan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
+// WAJIB DITAMBAHKAN UNTUK MEMANGGIL MIDTRANS
+use Midtrans\Config;
+use Midtrans\Snap;
+
 class KantinController extends Controller
 {
-    // 1. Tampilan Halaman Awal Kasir
     public function index()
     {
-        $vendors = Vendor::all(); // Ambil semua data penjual (Bu Siti & Warkop)
+        $vendors = Vendor::all(); 
         return view('kantin.index', compact('vendors'));
     }
 
-    // 2. API untuk ambil Menu berdasarkan Vendor (Pakai AJAX nanti)
     public function getMenu($idvendor)
     {
         $menus = Menu::where('idvendor', $idvendor)->get();
         return response()->json(['status' => 'success', 'data' => $menus]);
     }
 
-    // 3. Proses Checkout & Bikin Order ID
     public function checkout(Request $request)
     {
-        DB::beginTransaction(); // Biar aman kalau error
+        DB::beginTransaction(); 
         try {
-            // A. Bikin ID Pesanan Unik (Format: ORD-Tanggal-Random)
-            // Contoh: ORD-20260411-ABC12
             $orderId = 'ORD-' . date('Ymd') . '-' . strtoupper(Str::random(5));
-            
-            // B. Bikin Nama Guest Otomatis (Contoh: Guest_0000001)
-            // Kita hitung jumlah pesanan yang udah ada, lalu tambah 1
             $urutan = Pesanan::count() + 1;
             $namaGuest = 'Guest_' . str_pad($urutan, 7, '0', STR_PAD_LEFT);
 
-            // C. Simpan ke tabel pesanan (Master)
+            // 1. Simpan Pesanan (Master)
             $pesanan = Pesanan::create([
                 'idpesanan' => $orderId,
                 'nama' => $namaGuest,
                 'total' => $request->total,
-                'status_bayar' => 'Pending' // Defaultnya pending
+                'status_bayar' => 'Pending' 
             ]);
 
-            // D. Looping simpan ke tabel detail_pesanan
+            // 2. Simpan Detail Pesanan (Keranjang)
             foreach($request->keranjang as $item) {
                 DetailPesanan::create([
                     'idpesanan' => $orderId,
@@ -58,18 +54,53 @@ class KantinController extends Controller
                 ]);
             }
 
+            // ==========================================
+            // 3. KONFIGURASI MIDTRANS & REQUEST TOKEN
+            // ==========================================
+            Config::$serverKey = env('MIDTRANS_SERVER_KEY');
+            Config::$isProduction = env('MIDTRANS_IS_PRODUCTION', false);
+            Config::$isSanitized = env('MIDTRANS_IS_SANITIZED', true);
+            Config::$is3ds = env('MIDTRANS_IS_3DS', true);
+
+            // Susun data yang mau dikirim ke Midtrans
+            $params = [
+                'transaction_details' => [
+                    'order_id' => $orderId,
+                    'gross_amount' => $request->total, // Total harga
+                ],
+                'customer_details' => [
+                    'first_name' => $namaGuest, // Nama pemesan
+                ],
+            ];
+
+            // Minta Token Snap ke Midtrans!
+            $snapToken = Snap::getSnapToken($params);
+
+            // Simpan token tersebut ke database kita
+            $pesanan->update(['snap_token' => $snapToken]);
+
             DB::commit(); // Konfirmasi sukses
 
-            // Karena kita belum pasang Midtrans, kita balikin JSON sukses dulu
+            // Balikin Token-nya ke Frontend biar bisa ditampilin Pop-upnya
             return response()->json([
                 'status' => 'success', 
-                'message' => 'Pesanan berhasil dibuat!',
-                'order_id' => $orderId // Kirim balik ID-nya buat dipakai nanti
+                'snap_token' => $snapToken 
             ]);
 
         } catch (\Exception $e) {
-            DB::rollback(); // Batalin kalau error
+            DB::rollback(); 
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
         }
+    }
+
+    // Fungsi untuk mengubah status jadi Lunas
+    public function paymentSuccess(Request $request)
+    {
+        $pesanan = Pesanan::where('idpesanan', $request->order_id)->first();
+        if ($pesanan) {
+            $pesanan->update(['status_bayar' => 'Lunas']);
+            return response()->json(['status' => 'success']);
+        }
+        return response()->json(['status' => 'error']);
     }
 }

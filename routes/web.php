@@ -24,7 +24,9 @@ use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\JsController;
 use App\Http\Controllers\KasirController; 
-use App\Http\Controllers\KantinController; // Taruh di baris paling atas (use section)
+use App\Http\Controllers\KantinController; 
+use App\Http\Controllers\VendorController; 
+
 
 // rute untuk mengarahkan ke halaman login Google
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
@@ -81,5 +83,9 @@ Route::post('/api/transaksi', [KasirController::class, 'simpanTransaksi']);
 Route::get('/kantin', [KantinController::class, 'index'])->name('kantin.index');
 Route::get('/api/menu/{idvendor}', [KantinController::class, 'getMenu']); // Buat narik menu pakai AJAX
 Route::post('/kantin/checkout', [KantinController::class, 'checkout'])->name('kantin.checkout');
-
+// Rute untuk mengubah status jadi Lunas
+Route::post('/kantin/success', [KantinController::class, 'paymentSuccess'])->name('kantin.success');
+// --- RUTE DASHBOARD VENDOR ---
+Route::get('/vendor-dashboard', [VendorController::class, 'index'])->name('vendor.index');
+Route::post('/vendor-dashboard/menu', [VendorController::class, 'storeMenu'])->name('vendor.menu.store');
 });

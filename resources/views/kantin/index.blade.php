@@ -78,20 +78,21 @@
 
 @section('javascript_page')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script type="text/javascript"
+      src="https://app.sandbox.midtrans.com/snap/snap.js"
+      data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
+
 <script>
 $(document).ready(function() {
     
-    // --- 1. SELECT BERJENJANG (AJAX AMBIL MENU) ---
+    // (Script Select Vendor & Tambah Keranjang Tetap Sama)
     $('#selectVendor').on('change', function() {
         let idvendor = $(this).val();
-        
-        // Tampilkan loading text
         $('#selectMenu').html('<option value="">Memuat menu...</option>');
-        $('#areaMenu').removeClass('d-none'); // Munculkan area menu
-        
+        $('#areaMenu').removeClass('d-none');
         $.ajax({
-            type: "GET",
-            url: "/api/menu/" + idvendor,
+            type: "GET", url: "/api/menu/" + idvendor,
             success: function(response) {
                 if(response.status === 'success') {
                     let opsiMenu = '<option value="" selected disabled>-- Pilih Menu --</option>';
@@ -99,32 +100,24 @@ $(document).ready(function() {
                         opsiMenu += `<option value="${menu.idmenu}" data-nama="${menu.nama_menu}" data-harga="${menu.harga}">${menu.nama_menu} - Rp ${menu.harga}</option>`;
                     });
                     $('#selectMenu').html(opsiMenu);
-                    
-                    // Reset input harga & jumlah
-                    $('#hargaMenu').val('');
-                    $('#jumlahMenu').val(1);
+                    $('#hargaMenu').val(''); $('#jumlahMenu').val(1);
                 }
             }
         });
     });
 
-    // --- 2. SAAT MENU DIPILIH, MUNCULKAN HARGA ---
     $('#selectMenu').on('change', function() {
         let harga = $(this).find(':selected').data('harga');
         $('#hargaMenu').val(harga);
     });
 
-    // --- 3. TAMBAH KE KERANJANG ---
     $('#btnTambah').on('click', function() {
         let idmenu = $('#selectMenu').val();
         let nama = $('#selectMenu').find(':selected').data('nama');
         let harga = parseInt($('#hargaMenu').val());
         let jumlah = parseInt($('#jumlahMenu').val());
 
-        if(!idmenu) {
-            Swal.fire('Oops', 'Pilih menu dulu ya!', 'warning');
-            return;
-        }
+        if(!idmenu) { Swal.fire('Oops', 'Pilih menu dulu ya!', 'warning'); return; }
 
         let subtotal = harga * jumlah;
         let existingRow = $('#tr-' + idmenu);
@@ -141,59 +134,45 @@ $(document).ready(function() {
                     <td>${nama} <input type="hidden" class="idmenu-val" value="${idmenu}"></td>
                     <td class="td-harga">${harga}</td>
                     <td><input type="number" class="form-control form-control-sm input-jumlah" value="${jumlah}" min="1"></td>
-                    <td>
-                        <span class="subtotal-teks">${subtotal}</span>
-                        <input type="hidden" class="subtotal-val" value="${subtotal}">
-                    </td>
+                    <td><span class="subtotal-teks">${subtotal}</span><input type="hidden" class="subtotal-val" value="${subtotal}"></td>
                     <td><button class="btn btn-sm btn-danger btn-hapus">Hapus</button></td>
                 </tr>
             `;
             $('#tabelKeranjang tbody').append(tr);
         }
-
-        updateTotal();
-        $('#selectMenu').val('');
-        $('#hargaMenu').val('');
-        $('#jumlahMenu').val(1);
+        updateTotal(); $('#selectMenu').val(''); $('#hargaMenu').val(''); $('#jumlahMenu').val(1);
     });
 
-    // --- 4. UBAH JUMLAH & HAPUS DARI KERANJANG ---
     $(document).on('change keyup', '.input-jumlah', function() {
         let tr = $(this).closest('tr');
         let harga = parseInt(tr.find('.td-harga').text());
         let jumlah = parseInt($(this).val());
         if(jumlah < 1 || isNaN(jumlah)) { jumlah = 1; $(this).val(1); }
         let subtotal = harga * jumlah;
-        tr.find('.subtotal-teks').text(subtotal);
-        tr.find('.subtotal-val').val(subtotal);
+        tr.find('.subtotal-teks').text(subtotal); tr.find('.subtotal-val').val(subtotal);
         updateTotal();
     });
 
     $(document).on('click', '.btn-hapus', function() {
-        $(this).closest('tr').remove();
-        updateTotal();
+        $(this).closest('tr').remove(); updateTotal();
     });
 
     function updateTotal() {
         let total = 0;
-        $('.subtotal-val').each(function() {
-            total += parseInt($(this).val());
-        });
+        $('.subtotal-val').each(function() { total += parseInt($(this).val()); });
         $('#labelTotal').text(total);
     }
 
-    // --- 5. PROSES CHECKOUT (AJAX POST) ---
+    // ===============================================
+    // FITUR CHECKOUT DENGAN POP-UP SNAP MIDTRANS
+    // ===============================================
     $('#btnCheckout').on('click', function() {
         let totalBelanja = parseInt($('#labelTotal').text());
-        
-        if(totalBelanja === 0) {
-            Swal.fire('Oops!', 'Keranjang masih kosong!', 'warning');
-            return;
-        }
+        if(totalBelanja === 0) { Swal.fire('Oops!', 'Keranjang masih kosong!', 'warning'); return; }
 
         let btn = $(this);
         let teksAsli = btn.text();
-        btn.html('<span class="spinner-border spinner-border-sm"></span> Memproses...');
+        btn.html('<span class="spinner-border spinner-border-sm"></span> Menghubungkan ke Midtrans...');
         btn.prop('disabled', true);
 
         let dataKeranjang = [];
@@ -206,38 +185,49 @@ $(document).ready(function() {
             });
         });
 
-        // Tembak POST ke Backend (Checkout)
         $.ajax({
             type: "POST",
             url: "{{ route('kantin.checkout') }}",
-            data: {
-                _token: '{{ csrf_token() }}',
-                total: totalBelanja,
-                keranjang: dataKeranjang
-            },
+            data: { _token: '{{ csrf_token() }}', total: totalBelanja, keranjang: dataKeranjang },
             success: function(response) {
                 if(response.status === 'success') {
-                    // Berhasil bikin order!
-                    Swal.fire({
-                        title: 'Pesanan Dibuat!',
-                        text: 'Order ID kamu: ' + response.order_id,
-                        icon: 'success'
-                    }).then(() => {
-                        $('#tabelKeranjang tbody').empty();
-                        updateTotal();
-                        btn.html(teksAsli);
-                        btn.prop('disabled', false);
+                    // MUNCULKAN POP-UP PEMBAYARAN MIDTRANS
+                    window.snap.pay(response.snap_token, {
+                        onSuccess: function(result){
+                            // Tembak AJAX ke backend untuk ubah status jadi Lunas
+                            $.ajax({
+                                type: "POST",
+                                url: "{{ route('kantin.success') }}",
+                                data: {
+                                    _token: '{{ csrf_token() }}',
+                                    order_id: result.order_id
+                                },
+                                success: function() {
+                                    Swal.fire('LUNAS!', 'Pembayaran berhasil dan status terupdate!', 'success').then(() => {
+                                        window.location.reload();
+                                    });
+                                }
+                            });
+                        },
+                        onPending: function(result){
+                            Swal.fire('Menunggu...', 'Silakan selesaikan pembayaranmu.', 'info');
+                        },
+                        onError: function(result){
+                            Swal.fire('Gagal!', 'Pembayaran gagal.', 'error');
+                        },
+                        onClose: function(){
+                            Swal.fire('Dibatalkan', 'Kamu menutup pop-up sebelum menyelesaikan pembayaran.', 'warning');
+                            btn.html(teksAsli); btn.prop('disabled', false);
+                        }
                     });
                 }
             },
             error: function() {
-                Swal.fire('Error!', 'Gagal checkout', 'error');
-                btn.html(teksAsli);
-                btn.prop('disabled', false);
+                Swal.fire('Error!', 'Gagal terhubung ke server', 'error');
+                btn.html(teksAsli); btn.prop('disabled', false);
             }
         });
     });
-
 });
 </script>
 @endsection
