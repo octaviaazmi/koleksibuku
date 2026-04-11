@@ -76,5 +76,12 @@
         </ul>
       </div>
     </li>
+    
+    <li class="nav-item">
+      <a class="nav-link" href="{{ route('kantin.index') }}">
+        <span class="menu-title">Kantin Online (Midtrans)</span>
+        <i class="mdi mdi-food menu-icon"></i>
+      </a>
+    </li>
   </ul>
 </nav>
