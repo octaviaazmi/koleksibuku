@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+@php
+    $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
+@endphp
 <html>
 <head>
     <title>Cetak Tag Harga Presisi TnJ 108</title>
@@ -80,6 +83,9 @@
                 <td>
                     <div class="isi-barang">
                         <span class="nama">{{ strlen($item->nama_barang) > 18 ? substr($item->nama_barang, 0, 18).'..' : $item->nama_barang }}</span>
+                        <img src="data:image/png;base64,{{ base64_encode($generator->getBarcode($b->id_barang, $generator::TYPE_CODE_128)) }}" alt="barcode" style="width: 120px; height: 30px; margin-bottom: 5px;">
+                            <br>
+                            {{ $b->id_barang }}
                         <span class="kode">{{ $item->id_barang }}</span>
                         <span class="harga">Rp {{ number_format($item->harga, 0, ',', '.') }}</span>
                     </div>
