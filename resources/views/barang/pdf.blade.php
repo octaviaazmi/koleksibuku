@@ -83,9 +83,9 @@
                 <td>
                     <div class="isi-barang">
                         <span class="nama">{{ strlen($item->nama_barang) > 18 ? substr($item->nama_barang, 0, 18).'..' : $item->nama_barang }}</span>
-                        <img src="data:image/png;base64,{{ base64_encode($generator->getBarcode($b->id_barang, $generator::TYPE_CODE_128)) }}" alt="barcode" style="width: 120px; height: 30px; margin-bottom: 5px;">
+                        <img src="data:image/png;base64,{{ base64_encode($generator->getBarcode($item->id_barang, $generator::TYPE_CODE_128)) }}" alt="barcode" style="width: 120px; height: 30px; margin-bottom: 5px;">
                             <br>
-                            {{ $b->id_barang }}
+                            {{ $item->id_barang }}
                         <span class="kode">{{ $item->id_barang }}</span>
                         <span class="harga">Rp {{ number_format($item->harga, 0, ',', '.') }}</span>
                     </div>

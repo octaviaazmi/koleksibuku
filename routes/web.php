@@ -26,6 +26,7 @@ use App\Http\Controllers\JsController;
 use App\Http\Controllers\KasirController; 
 use App\Http\Controllers\KantinController; 
 use App\Http\Controllers\VendorController; 
+use App\Http\Controllers\CustomerController; 
 
 
 // rute untuk mengarahkan ke halaman login Google
@@ -88,4 +89,12 @@ Route::post('/kantin/success', [KantinController::class, 'paymentSuccess'])->nam
 // --- RUTE DASHBOARD VENDOR ---
 Route::get('/vendor-dashboard', [VendorController::class, 'index'])->name('vendor.index');
 Route::post('/vendor-dashboard/menu', [VendorController::class, 'storeMenu'])->name('vendor.menu.store');
+
+
+// --- RUTE STUDI KASUS KAMERA ---
+Route::get('/customer', [CustomerController::class, 'index'])->name('customer.index');
+Route::get('/customer/create-blob', [CustomerController::class, 'createBlob'])->name('customer.blob');
+Route::post('/customer/store-blob', [CustomerController::class, 'storeBlob'])->name('customer.store_blob');
+Route::get('/customer/create-file', [CustomerController::class, 'createFile'])->name('customer.file');
+Route::post('/customer/store-file', [CustomerController::class, 'storeFile'])->name('customer.store_file');
 });

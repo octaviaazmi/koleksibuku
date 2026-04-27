@@ -12,6 +12,13 @@ use Illuminate\Support\Str;
 // WAJIB DITAMBAHKAN UNTUK MEMANGGIL MIDTRANS
 use Midtrans\Config;
 use Midtrans\Snap;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel;
+use Endroid\QrCode\Label\LabelAlignment;
+use Endroid\QrCode\Label\Font\NotoSans;
+use Endroid\QrCode\RoundBlockSizeMode;
+use Endroid\QrCode\Writer\SvgWriter;
 
 class KantinController extends Controller
 {
@@ -97,10 +104,27 @@ class KantinController extends Controller
     public function paymentSuccess(Request $request)
     {
         $pesanan = Pesanan::where('idpesanan', $request->order_id)->first();
+        
         if ($pesanan) {
             $pesanan->update(['status_bayar' => 'Lunas']);
-            return response()->json(['status' => 'success']);
+
+            // --- GENERATE QR CODE (VERSI ENDROID 5.x) ---
+            $builder = new Builder(
+                writer: new SvgWriter(),
+                data: $pesanan->idpesanan, // Isi QR Code
+                size: 250,
+                margin: 10
+            );
+
+            $result = $builder->build();
+            $base64DataUri = $result->getDataUri();
+
+            return response()->json([
+                'status' => 'success',
+                'qr_code' => $base64DataUri
+            ]);
         }
+        
         return response()->json(['status' => 'error']);
     }
 }

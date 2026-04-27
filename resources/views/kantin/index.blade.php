@@ -194,7 +194,6 @@ $(document).ready(function() {
                     // MUNCULKAN POP-UP PEMBAYARAN MIDTRANS
                     window.snap.pay(response.snap_token, {
                         onSuccess: function(result){
-                            // Tembak AJAX ke backend untuk ubah status jadi Lunas
                             $.ajax({
                                 type: "POST",
                                 url: "{{ route('kantin.success') }}",
@@ -202,10 +201,23 @@ $(document).ready(function() {
                                     _token: '{{ csrf_token() }}',
                                     order_id: result.order_id
                                 },
-                                success: function() {
-                                    Swal.fire('LUNAS!', 'Pembayaran berhasil dan status terupdate!', 'success').then(() => {
-                                        window.location.reload();
-                                    });
+                                success: function(res) {
+                                    if(res.status === 'success') {
+                                        Swal.fire({
+                                            title: 'LUNAS!',
+                                            html: 'Pembayaran berhasil. Silakan simpan QR Code ini:<br><br>' +
+                                                  '<img src="' + res.qr_code + '" style="border:2px solid #ccc; border-radius:10px; width:200px;">',
+                                            icon: 'success',
+                                            confirmButtonText: 'Tutup'
+                                        }).then(() => {
+                                            window.location.reload();
+                                        });
+                                    }
+                                },
+                                // INI PENANGKAP ERROR-NYA
+                                error: function(err) {
+                                    console.log(err.responseText);
+                                    Swal.fire('Waduh Error!', 'Gagal generate QR. Coba tekan F12 lalu cek tab Console.', 'error');
                                 }
                             });
                         },
