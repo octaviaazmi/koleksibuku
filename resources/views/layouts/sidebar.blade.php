@@ -91,19 +91,19 @@
       </a>
     </li>
 
-    <li class="nav-item">
-      <a class="nav-link" data-toggle="collapse" href="#customer-menu" aria-expanded="false" aria-controls="customer-menu">
-        <span class="menu-title">Menu Customer (Kamera)</span>
-        <i class="menu-arrow"></i>
-        <i class="mdi mdi-camera menu-icon"></i>
-      </a>
-      <div class="collapse" id="customer-menu">
-        <ul class="nav flex-column sub-menu">
-          <li class="nav-item"> <a class="nav-link" href="{{ route('customer.index') }}">Data Customer</a></li>
-          <li class="nav-item"> <a class="nav-link" href="{{ route('customer.blob') }}">Tambah 1 (BLOB)</a></li>
-          <li class="nav-item"> <a class="nav-link" href="{{ route('customer.file') }}">Tambah 2 (FILE)</a></li>
-        </ul>
-      </div>
+    <li class="nav-item {{ Request::is('customer*') ? 'active' : '' }}">
+        <a class="nav-link" data-bs-toggle="collapse" href="#customer-menu" aria-expanded="{{ Request::is('customer*') ? 'true' : 'false' }}" aria-controls="customer-menu">
+            <span class="menu-title">Menu Customer (Kamera)</span>
+            <i class="menu-arrow"></i>
+            <i class="mdi mdi-camera menu-icon"></i>
+        </a>
+        <div class="collapse {{ Request::is('customer*') ? 'show' : '' }}" id="customer-menu">
+            <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link {{ Route::is('customer.index') ? 'active' : '' }}" href="{{ route('customer.index') }}">Data Customer</a></li>
+                <li class="nav-item"> <a class="nav-link {{ Route::is('customer.blob') ? 'active' : '' }}" href="{{ route('customer.blob') }}">Tambah 1 (BLOB)</a></li>
+                <li class="nav-item"> <a class="nav-link {{ Route::is('customer.file') ? 'active' : '' }}" href="{{ route('customer.file') }}">Tambah 2 (FILE)</a></li>
+            </ul>
+        </div>
     </li>
   </ul>
 </nav>

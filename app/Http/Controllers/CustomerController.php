@@ -38,12 +38,15 @@ class CustomerController extends Controller
     }
 
     // --- FUNGSI UNTUK MENYIMPAN GAMBAR SEBAGAI FILE FISIK ---
+    // --- FUNGSI UNTUK MENYIMPAN GAMBAR SEBAGAI FILE FISIK ---
     public function storeFile(Request $request)
     {
         $fotoPath = null;
 
-        if ($request->foto_base64) {
-            // Karena dari JS kita dapatnya teks Base64, kita harus "Decode" jadi file beneran
+        // Validasi tambahan: Pastikan datanya ada dan benar-benar string Base64 yang valid
+        if ($request->foto_base64 && str_contains($request->foto_base64, ';base64,')) {
+            
+            // "Decode" teks Base64 jadi file beneran
             $image_parts = explode(";base64,", $request->foto_base64);
             $image_type_aux = explode("image/", $image_parts[0]);
             $image_type = $image_type_aux[1];
@@ -56,11 +59,14 @@ class CustomerController extends Controller
             Storage::disk('public')->put('customers/' . $fileName, $image_base64);
             
             $fotoPath = 'customers/' . $fileName;
+        } else {
+            // Kalau nggak ada jepretan, kembalikan dengan pesan error!
+            return back()->with('error', 'Gagal menyimpan! Pastikan kamu sudah klik tombol Jepret Foto sebelum menekan Simpan.');
         }
 
         Customer::create([
             'nama' => $request->nama,
-            'foto_path' => $fotoPath // Simpan alamat URL foldernya saja
+            'foto_path' => $fotoPath 
         ]);
 
         return redirect()->route('customer.index')->with('success', 'Foto Customer (FILE) berhasil disimpan!');
