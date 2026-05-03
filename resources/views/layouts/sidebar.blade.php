@@ -47,6 +47,12 @@
         <span class="menu-title">Data Barang (Tag)</span>
         <i class="mdi mdi-tag-multiple menu-icon"></i>
       </a>
+      <li class="nav-item">
+    <a class="nav-link {{ Route::is('barang.scan') ? 'active' : '' }}" href="{{ route('barang.scan') }}">
+        <span class="menu-title">Scan Barcode Barang</span>
+        <i class="mdi mdi-barcode-scan menu-icon"></i>
+    </a>
+</li>
     </li>
 
     <li class="nav-item">
@@ -89,6 +95,12 @@
         <span class="menu-title">Dashboard Vendor</span>
         <i class="mdi mdi-store menu-icon"></i>
       </a>
+      <li class="nav-item">
+    <a class="nav-link {{ Route::is('vendor.scan') ? 'active' : '' }}" href="{{ route('vendor.scan') }}">
+        <span class="menu-title">Scan QR Vendor</span>
+        <i class="mdi mdi-qrcode-scan menu-icon text-success"></i>
+    </a>
+</li>
     </li>
 
     <li class="nav-item {{ Request::is('customer*') ? 'active' : '' }}">
@@ -102,6 +114,9 @@
                 <li class="nav-item"> <a class="nav-link {{ Route::is('customer.index') ? 'active' : '' }}" href="{{ route('customer.index') }}">Data Customer</a></li>
                 <li class="nav-item"> <a class="nav-link {{ Route::is('customer.blob') ? 'active' : '' }}" href="{{ route('customer.blob') }}">Tambah 1 (BLOB)</a></li>
                 <li class="nav-item"> <a class="nav-link {{ Route::is('customer.file') ? 'active' : '' }}" href="{{ route('customer.file') }}">Tambah 2 (FILE)</a></li>
+                
+                <!-- INI MENU BARUNYA -->
+                <li class="nav-item"> <a class="nav-link {{ Route::is('customer.riwayat') ? 'active' : '' }}" href="{{ route('customer.riwayat') }}">Riwayat Pesanan</a></li>
             </ul>
         </div>
     </li>

@@ -127,4 +127,14 @@ class KantinController extends Controller
         
         return response()->json(['status' => 'error']);
     }
+
+    // Menampilkan halaman riwayat pesanan dan QR Code untuk Customer
+    public function riwayat()
+    {
+        // Mengambil semua data pesanan dari database
+        // (Catatan: Kalau kolom id pesananmu namanya bukan 'id', sesuaikan ya nanti di Blade)
+        $pesanan = \App\Models\Pesanan::latest()->get(); 
+        
+        return view('customer.riwayat', compact('pesanan'));
+    }
 }

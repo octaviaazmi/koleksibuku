@@ -42,4 +42,26 @@ class VendorController extends Controller
 
         return back()->with('success', 'Menu baru berhasil ditambahkan!');
     }
+
+    // Menampilkan halaman scanner QR Code
+    public function scan()
+    {
+        return view('vendor.scan');
+    }
+
+    // Mengambil data pesanan via AJAX setelah QR di-scan
+    public function getPesananById($idpesanan)
+    {
+        // Cari pesanan berdasarkan idpesanan
+        $pesanan = \App\Models\Pesanan::where('idpesanan', $idpesanan)->first();
+        
+        if ($pesanan) {
+            return response()->json([
+                'status' => 'success', 
+                'data' => $pesanan
+            ]);
+        }
+        
+        return response()->json(['status' => 'error', 'message' => 'Pesanan tidak ditemukan!']);
+    }
 }

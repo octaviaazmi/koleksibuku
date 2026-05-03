@@ -99,13 +99,18 @@ Route::get('/customer/create-file', [CustomerController::class, 'createFile'])->
 Route::post('/customer/store-file', [CustomerController::class, 'storeFile'])->name('customer.store_file');
 });
 
-// --- TARUH RUTE SCAN INI DI ATAS RUTE RESOURCE BARANG ---
-Route::get('/barang/scan', [App\Http\Controllers\BarangController::class, 'scan'])->name('barang.scan');
+// 1. RUTE SCAN HARUS DI ATAS
+Route::get('/scan-barang', [App\Http\Controllers\BarangController::class, 'scan'])->name('barang.scan');
 Route::get('/api/barang/{id_barang}', [App\Http\Controllers\BarangController::class, 'getBarangById']);
 
-// --- RUTE RESOURCE ATAU RUTE BARANG LAINNYA ADA DI BAWAHNYA ---
-Route::resource('barang', App\Http\Controllers\BarangController::class); 
-// Atau jika kamu pakai rute manual:
-// Route::get('/barang', [BarangController::class, 'index']);
-// Route::get('/barang/{barang}', [BarangController::class, 'show']);
-// dll...
+// 2. RUTE RESOURCE BARU DI BAWAHNYA
+Route::resource('barang', App\Http\Controllers\BarangController::class);
+
+// Rute untuk melihat riwayat pesanan (Sisi Customer)
+Route::get('/customer/riwayat', [App\Http\Controllers\KantinController::class, 'riwayat'])->name('customer.riwayat');
+
+// Rute Halaman Scanner Vendor
+Route::get('/vendor/scan-qr', [App\Http\Controllers\VendorController::class, 'scan'])->name('vendor.scan');
+
+// Rute API untuk ngambil data pesanan berdasarkan QR Code
+Route::get('/api/pesanan/{idpesanan}', [App\Http\Controllers\VendorController::class, 'getPesananById']);
