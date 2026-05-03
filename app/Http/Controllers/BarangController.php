@@ -91,4 +91,22 @@ class BarangController extends Controller
 
         return redirect()->route('barang.index')->with('success', 'Data barang berhasil dihapus!');
     }
+
+    // Menampilkan halaman scanner
+    public function scan()
+    {
+        return view('barang.scan');
+    }
+
+    // Mengambil data barang via AJAX setelah barcode di-scan
+    public function getBarangById($id_barang)
+    {
+        $barang = Barang::where('id_barang', $id_barang)->first();
+        
+        if ($barang) {
+            return response()->json(['status' => 'success', 'data' => $barang]);
+        }
+        
+        return response()->json(['status' => 'error', 'message' => 'Barang tidak ditemukan!']);
+    }
 }
