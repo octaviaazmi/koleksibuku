@@ -52,7 +52,7 @@
                                     <i class="mdi mdi-printer"></i> Cetak Barcode
                                 </button>
                                 
-                                <a href="#" class="btn btn-warning btn-sm text-dark">
+                                <a href="{{ route('toko.lokasi', $t->id) }}" class="btn btn-warning btn-sm text-dark">
                                     <i class="mdi mdi-map-marker"></i> Set Lokasi
                                 </a>
                             </td>

@@ -25,5 +25,24 @@ class TokoController extends Controller
         return redirect()->route('toko.index')->with('success', 'Toko baru berhasil ditambahkan!');
     }
 
-    // (Nanti fungsi editLokasi dan updateLokasi kita buat di Step 3)
+    // Menampilkan halaman Set Lokasi (Titik Awal Toko)
+    public function editLokasi($id)
+    {
+        $toko = Toko::findOrFail($id);
+        return view('toko.lokasi', compact('toko'));
+    }
+
+    // Menyimpan koordinat GPS ke database
+    public function updateLokasi(Request $request, $id)
+    {
+        $toko = Toko::findOrFail($id);
+        
+        $toko->update([
+            'latitude'  => $request->latitude,
+            'longitude' => $request->longitude,
+            'accuracy'  => $request->accuracy,
+        ]);
+
+        return redirect()->route('toko.index')->with('success', 'Titik lokasi Toko berhasil dikunci permanen!');
+    }
 }
