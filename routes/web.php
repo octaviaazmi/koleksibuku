@@ -114,3 +114,7 @@ Route::get('/vendor/scan-qr', [App\Http\Controllers\VendorController::class, 'sc
 
 // Rute API untuk ngambil data pesanan berdasarkan QR Code
 Route::get('/api/pesanan/{idpesanan}', [App\Http\Controllers\VendorController::class, 'getPesananById']);
+
+// Rute untuk Set Lokasi Kordinat Customer/Toko (Titik A)
+Route::get('/customer/{id}/lokasi', [App\Http\Controllers\CustomerController::class, 'editLokasi'])->name('customer.lokasi');
+Route::post('/customer/{id}/lokasi', [App\Http\Controllers\CustomerController::class, 'updateLokasi'])->name('customer.update_lokasi');

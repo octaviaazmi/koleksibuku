@@ -71,4 +71,26 @@ class CustomerController extends Controller
 
         return redirect()->route('customer.index')->with('success', 'Foto Customer (FILE) berhasil disimpan!');
     }
+
+    // Menampilkan halaman set lokasi GPS
+    public function editLokasi($id)
+    {
+        // Sesuaikan nama Model-nya jika menggunakan penulisan berbeda
+        $customer = \App\Models\Customer::findOrFail($id); 
+        return view('customer.lokasi', compact('customer'));
+    }
+
+    // Menyimpan data latitude & longitude ke database
+    public function updateLokasi(Request $request, $id)
+    {
+        $customer = \App\Models\Customer::findOrFail($id);
+        
+        $customer->update([
+            'latitude'  => $request->latitude,
+            'longitude' => $request->longitude,
+        ]);
+
+        // Gunakan SweetAlert/Notifikasi bawaanmu, ini redirect standar
+        return redirect()->route('customer.index')->with('success', 'Titik lokasi toko berhasil dikunci!');
+    }
 }
