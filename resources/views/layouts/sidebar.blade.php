@@ -120,5 +120,12 @@
             </ul>
         </div>
     </li>
+
+    <li class="nav-item">
+    <a class="nav-link {{ Request::is('toko*') ? 'active' : '' }}" href="{{ route('toko.index') }}">
+        <span class="menu-title">Kunjungan Toko</span>
+        <i class="mdi mdi-map-marker-radius menu-icon text-danger"></i>
+    </a>
+</li>
   </ul>
 </nav>

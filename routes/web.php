@@ -115,6 +115,10 @@ Route::get('/vendor/scan-qr', [App\Http\Controllers\VendorController::class, 'sc
 // Rute API untuk ngambil data pesanan berdasarkan QR Code
 Route::get('/api/pesanan/{idpesanan}', [App\Http\Controllers\VendorController::class, 'getPesananById']);
 
-// Rute untuk Set Lokasi Kordinat Customer/Toko (Titik A)
-Route::get('/customer/{id}/lokasi', [App\Http\Controllers\CustomerController::class, 'editLokasi'])->name('customer.lokasi');
-Route::post('/customer/{id}/lokasi', [App\Http\Controllers\CustomerController::class, 'updateLokasi'])->name('customer.update_lokasi');
+// Rute untuk Data Toko
+Route::get('/toko', [App\Http\Controllers\TokoController::class, 'index'])->name('toko.index');
+Route::post('/toko', [App\Http\Controllers\TokoController::class, 'store'])->name('toko.store'); // Buat nambah toko baru
+
+// Rute Khusus untuk Set Lokasi (Titik Awal)
+Route::get('/toko/{id}/lokasi', [App\Http\Controllers\TokoController::class, 'editLokasi'])->name('toko.lokasi');
+Route::post('/toko/{id}/lokasi', [App\Http\Controllers\TokoController::class, 'updateLokasi'])->name('toko.update_lokasi');

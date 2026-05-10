@@ -8,18 +8,19 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::table('customer', function (Blueprint $table) {
-            // Menambahkan kolom latitude dan longitude (bisa disesuaikan posisinya)
+        Schema::create('toko', function (Blueprint $table) {
+            $table->id();
+            $table->string('barcode')->unique(); // ID Unik Toko
+            $table->string('nama_toko');
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();
+            $table->string('accuracy')->nullable();
+            $table->timestamps();
         });
     }
 
     public function down()
     {
-        Schema::table('customer', function (Blueprint $table) {
-            // Untuk menghapus kolom jika di-rollback
-            $table->dropColumn(['latitude', 'longitude']);
-        });
+        Schema::dropIfExists('toko');
     }
 };
