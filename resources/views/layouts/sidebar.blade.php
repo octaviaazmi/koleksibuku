@@ -122,9 +122,16 @@
     </li>
 
     <li class="nav-item">
-    <a class="nav-link {{ Request::is('toko*') ? 'active' : '' }}" href="{{ route('toko.index') }}">
-        <span class="menu-title">Kunjungan Toko</span>
+    <a class="nav-link {{ Request::is('toko*') && !Route::is('toko.kunjungan') ? 'active' : '' }}" href="{{ route('toko.index') }}">
+        <span class="menu-title">Data Toko (Klien)</span>
         <i class="mdi mdi-map-marker-radius menu-icon text-danger"></i>
+    </a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link {{ Route::is('toko.kunjungan') ? 'active' : '' }}" href="{{ route('toko.kunjungan') }}">
+        <span class="menu-title">Kunjungan Sales (GPS)</span>
+        <i class="mdi mdi-crosshairs-gps menu-icon text-warning"></i>
     </a>
 </li>
   </ul>

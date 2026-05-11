@@ -35,7 +35,13 @@
                         </div>
                     </div>
 
-                    <p class="text-muted small mt-2">💡 Tips: Jika tombol otomatis gagal, Anda bisa copy-paste koordinat dari Google Maps secara manual.</p>
+                    <div id="loadingInfo" class="d-none mt-3 mb-3">
+                        <div class="spinner-grow text-danger" role="status" style="width: 3rem; height: 3rem;"></div>
+                        <h5 class="text-danger mt-3" id="loadingText">Mencari sinyal satelit paling akurat...</h5>
+                        <p class="text-muted small">Jangan tutup halaman ini.</p>
+                    </div>
+
+                    <p class="text-muted small mt-2">💡 Tips: Jika tombol otomatis gagal/tidak bereaksi, Anda bisa copy-paste koordinat dari Google Maps secara manual.</p>
 
                     <button type="button" id="btnAmbilLokasi" class="btn btn-warning btn-lg w-100 mb-3 font-weight-bold text-dark">
                         <i class="mdi mdi-crosshairs-gps"></i> Coba Ambil Otomatis via GPS
@@ -51,9 +57,7 @@
         </div>
     </div>
 </div>
-@endsection
 
-@section('javascript_page')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     // FUNGSI JURUS 1: NYARI SINYAL AKURAT (Dari Lampiran 1 Modul)
@@ -67,22 +71,17 @@
                     const acc = position.coords.accuracy;
                     document.getElementById('loadingText').innerText = "Mendeteksi sinyal... Akurasi saat ini: " + Math.round(acc) + " meter";
                     
-                    // Simpan hasil terbaik sejauh ini
                     if (!bestResult || acc < bestResult.coords.accuracy) {
                         bestResult = position;
                     }
-
-                    // Kalau sudah cukup akurat (<= 50m), berhenti
                     if (acc <= targetAccuracy) {
                         navigator.geolocation.clearWatch(watchId);
                         resolve(bestResult);
                     }
-
-                    // Kalau timeout, pakai hasil terbaik yang ada
                     if (Date.now() - startTime >= maxWait) {
                         navigator.geolocation.clearWatch(watchId);
                         if (bestResult) resolve(bestResult);
-                        else reject(new Error("Timeout, tidak dapat posisi"));
+                        else reject(new Error("Timeout GPS. Gagal mencari sinyal."));
                     }
                 },
                 (error) => reject(error),
@@ -97,49 +96,31 @@
         document.getElementById('loadingInfo').classList.remove('d-none'); // Munculkan loading
 
         try {
-            // Target akurasi 50 meter, maksimal nunggu 20 detik
             const pos = await getAccuratePosition(50, 20000);
             
-            // KITA PASANG CCTV DI SINI BUAT NGECEK DATA ASLINYA
-            console.log("HASIL SEDOTAN GPS WINDOWS:", pos);
-            console.log("LATITUDE:", pos.coords.latitude);
-            console.log("LONGITUDE:", pos.coords.longitude);
-            console.log("AKURASI:", pos.coords.accuracy);
-
+            // Masukkan data ke form
             const latAsli = pos.coords.latitude;
             const lngAsli = pos.coords.longitude;
             const accAsli = Math.round(pos.coords.accuracy);
 
-            if (!latAsli || !lngAsli) {
-                // Kalau sensor nyala tapi Windows nggak ngasih angka lat/long
+            if(!latAsli || !lngAsli) {
                 document.getElementById('loadingInfo').classList.add('d-none');
                 document.getElementById('btnAmbilLokasi').classList.remove('d-none');
-                Swal.fire('Sensor Aneh!', 'Sensor GPS merespons, tapi laptop Anda tidak mengirimkan data Latitude/Longitude. Silakan pakai opsi Copy-Paste manual dari Google Maps.', 'warning');
+                Swal.fire('Sensor Null', 'GPS merespons tapi tidak mengirim titik kordinat. Laptop Anda memblokir data Latitude. Silakan pakai Google Maps manual.', 'warning');
             } else {
-                // Kalau datanya normal, masukkan ke form
                 document.getElementById('lat').value = latAsli;
                 document.getElementById('lng').value = lngAsli;
                 document.getElementById('acc').value = accAsli;
 
-                // Munculkan tombol Simpan
                 document.getElementById('loadingInfo').classList.add('d-none');
-                document.getElementById('btnSimpan').classList.remove('d-none');
-                
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Sinyal Didapat!',
-                    text: 'Akurasi: ' + accAsli + ' meter. Jangan lupa klik Kunci & Simpan.',
-                    confirmButtonColor: '#3085d6'
-                });
+                Swal.fire('Sinyal Didapat!', 'Kordinat sukses diambil. Silakan klik Kunci & Simpan.', 'success');
             }
 
         } catch (error) {
             document.getElementById('loadingInfo').classList.add('d-none');
-            this.classList.remove('d-none'); // Tombol balikin ke d-none => ini harusnya document.getElementById('btnAmbilLokasi').classList.remove('d-none'); 
-            // perbaikan:
             document.getElementById('btnAmbilLokasi').classList.remove('d-none');
             
-            Swal.fire('Gagal GPS', 'Gagal mendapatkan sinyal GPS. Silakan input manual dari Google Maps. Error: ' + error.message, 'error');
+            Swal.fire('Gagal GPS', 'Tolong nyalakan Location di pengaturan Windows Anda atau copy-paste manual dari Google Maps. Error: ' + error.message, 'error');
         }
     });
 </script>

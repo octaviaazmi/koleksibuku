@@ -27,6 +27,8 @@ use App\Http\Controllers\KasirController;
 use App\Http\Controllers\KantinController; 
 use App\Http\Controllers\VendorController; 
 use App\Http\Controllers\CustomerController; 
+use App\Http\Controllers\TokoController;
+
 
 
 // rute untuk mengarahkan ke halaman login Google
@@ -115,10 +117,7 @@ Route::get('/vendor/scan-qr', [App\Http\Controllers\VendorController::class, 'sc
 // Rute API untuk ngambil data pesanan berdasarkan QR Code
 Route::get('/api/pesanan/{idpesanan}', [App\Http\Controllers\VendorController::class, 'getPesananById']);
 
-// Rute untuk Data Toko
-Route::get('/toko', [App\Http\Controllers\TokoController::class, 'index'])->name('toko.index');
-Route::post('/toko', [App\Http\Controllers\TokoController::class, 'store'])->name('toko.store'); // Buat nambah toko baru
-
-// Rute Khusus untuk Set Lokasi (Titik Awal)
-Route::get('/toko/{id}/lokasi', [App\Http\Controllers\TokoController::class, 'editLokasi'])->name('toko.lokasi');
-Route::post('/toko/{id}/lokasi', [App\Http\Controllers\TokoController::class, 'updateLokasi'])->name('toko.update_lokasi');
+Route::get('/toko', [TokoController::class, 'index'])->name('toko.index');
+Route::post('/toko', [TokoController::class, 'store'])->name('toko.store');
+Route::get('/toko/kunjungan', [TokoController::class, 'kunjungan'])->name('toko.kunjungan');
+Route::post('/toko/cek-jarak', [TokoController::class, 'cekJarak'])->name('toko.cekJarak');

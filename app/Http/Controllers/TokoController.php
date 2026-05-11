@@ -2,47 +2,60 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Toko;
+use Illuminate\Http\Request;
+use Str;
 
 class TokoController extends Controller
 {
-    // Menampilkan halaman List Toko
+    // Halaman list toko
     public function index()
     {
-        $tokos = Toko::latest()->get();
+        $tokos = Toko::all();
         return view('toko.index', compact('tokos'));
     }
 
-    // Menyimpan Toko Baru (Simulasi Admin nambah toko)
+    // Simpan toko baru
     public function store(Request $request)
     {
-        Toko::create([
-            'barcode'   => 'TK-' . strtoupper(uniqid()), // Generate barcode acak otomatis
-            'nama_toko' => $request->nama_toko,
+        $request->validate([
+            'nama_toko' => 'required|string',
+            'latitude'  => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'accuracy'  => 'required|numeric',
         ]);
 
-        return redirect()->route('toko.index')->with('success', 'Toko baru berhasil ditambahkan!');
-    }
-
-    // Menampilkan halaman Set Lokasi (Titik Awal Toko)
-    public function editLokasi($id)
-    {
-        $toko = Toko::findOrFail($id);
-        return view('toko.lokasi', compact('toko'));
-    }
-
-    // Menyimpan koordinat GPS ke database
-    public function updateLokasi(Request $request, $id)
-    {
-        $toko = Toko::findOrFail($id);
-        
-        $toko->update([
+        Toko::create([
+            'barcode'   => 'TOKO-' . strtoupper(Str::random(8)),
+            'nama_toko' => $request->nama_toko,
             'latitude'  => $request->latitude,
             'longitude' => $request->longitude,
             'accuracy'  => $request->accuracy,
         ]);
 
-        return redirect()->route('toko.index')->with('success', 'Titik lokasi Toko berhasil dikunci permanen!');
+        return redirect()->route('toko.index')->with('success', 'Toko berhasil ditambahkan!');
+    }
+
+    // Halaman kunjungan (form scan + cek jarak)
+    public function kunjungan()
+    {
+        return view('toko.kunjungan');
+    }
+
+    // Proses cek jarak saat kunjungan
+    public function cekJarak(Request $request)
+    {
+        $toko = Toko::where('barcode', $request->barcode)->first();
+
+        if (!$toko) {
+            return response()->json(['error' => 'Toko tidak ditemukan'], 404);
+        }
+
+        return response()->json([
+            'nama_toko' => $toko->nama_toko,
+            'lat_toko'  => $toko->latitude,
+            'lng_toko'  => $toko->longitude,
+            'acc_toko'  => $toko->accuracy,
+        ]);
     }
 }
