@@ -15,14 +15,14 @@
 <div class="card shadow-sm border-0">
     <div class="card-body">
         <h4 class="card-title">List Toko</h4>
-        <p class="card-description">Daftar toko beserta titik koordinat GPS-nya.</p>
+        <p class="card-description">Daftar toko beserta titik koordinat GPS-nya. Klik QR untuk memperbesar.</p>
 
         <div class="table-responsive">
             <table class="table table-hover table-striped">
                 <thead class="bg-primary text-white">
                     <tr>
                         <th width="5%">No</th>
-                        <th>Barcode ID</th>
+                        <th class="text-center">QR Code</th> <th>Barcode ID</th>
                         <th>Nama Toko</th>
                         <th>Latitude</th>
                         <th>Longitude</th>
@@ -33,15 +33,39 @@
                     @forelse($tokos as $index => $t)
                         <tr>
                             <td>{{ $index + 1 }}</td>
+                            <td class="text-center">
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#modalQR{{ $t->id }}">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=50x50&data={{ $t->barcode }}" 
+                                         alt="QR" class="border rounded shadow-sm bg-white">
+                                </a>
+                            </td>
                             <td><span class="badge badge-dark">{{ $t->barcode }}</span></td>
                             <td class="font-weight-bold">{{ $t->nama_toko }}</td>
                             <td class="text-success">{{ $t->latitude }}</td>
                             <td class="text-success">{{ $t->longitude }}</td>
                             <td><span class="badge badge-success">{{ round($t->accuracy) }} m</span></td>
                         </tr>
+
+                        <div class="modal fade" id="modalQR{{ $t->id }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-sm modal-dialog-centered">
+                                <div class="modal-content text-center">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Scan QR Kunjungan</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body p-4 bg-white">
+                                        <h4 class="mb-3 text-primary">{{ $t->nama_toko }}</h4>
+                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ $t->barcode }}" 
+                                             alt="QR" class="img-fluid border p-2 shadow-sm">
+                                        <p class="mt-3 mb-0 font-weight-bold">{{ $t->barcode }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center py-4 text-muted">Belum ada data toko.</td>
+                            <td colspan="7" class="text-center py-4 text-muted">Belum ada data toko.</td>
                         </tr>
                     @endforelse
                 </tbody>
