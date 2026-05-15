@@ -28,6 +28,7 @@ use App\Http\Controllers\KantinController;
 use App\Http\Controllers\VendorController; 
 use App\Http\Controllers\CustomerController; 
 use App\Http\Controllers\TokoController;
+use App\Http\Controllers\AntrianController;
 
 
 
@@ -121,3 +122,18 @@ Route::get('/toko', [TokoController::class, 'index'])->name('toko.index');
 Route::post('/toko', [TokoController::class, 'store'])->name('toko.store');
 Route::get('/toko/kunjungan', [TokoController::class, 'kunjungan'])->name('toko.kunjungan');
 Route::post('/toko/cek-jarak', [TokoController::class, 'cekJarak'])->name('toko.cekJarak');
+
+// Halaman
+Route::get('/guest',  [AntrianController::class, 'guest'])->name('antrian.guest');
+Route::get('/admin',  [AntrianController::class, 'admin'])->name('antrian.admin');
+Route::get('/papan',  [AntrianController::class, 'papan'])->name('antrian.papan');
+
+// SSE Stream
+Route::get('/sse/antrian', [AntrianController::class, 'stream'])->name('antrian.stream');
+
+// Actions
+Route::post('/antrian/daftar',           [AntrianController::class, 'daftar'])->name('antrian.daftar');
+Route::post('/antrian/panggil',          [AntrianController::class, 'panggil'])->name('antrian.panggil');
+Route::post('/antrian/panggil-terlambat',[AntrianController::class, 'panggilTerlambat'])->name('antrian.panggilTerlambat');
+Route::post('/antrian/terlambat',        [AntrianController::class, 'terlambat'])->name('antrian.terlambat');
+Route::post('/antrian/reset',            [AntrianController::class, 'reset'])->name('antrian.reset');
